@@ -25,6 +25,7 @@ jobs:
       - name: Run sync script
         env:
           GMAIL_TOKEN: ${{ secrets.GMAIL_TOKEN }}
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
         run: python recruiting_sync.py
 
       - name: Commit and push data.json
