@@ -2,13 +2,13 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, viewport-fit=cover">
 <title>Isaac Lambert — Recruiting</title>
 <link rel="manifest" href="manifest.json">
 <!-- ============================================================
      TAB / BROWSER ICON
-     Replace BOTH URLs below with your own image link (png or jpg).
-     Upload your logo to imgur.com and paste the direct image URL here.
+     Replace BOTH URLs below with your own image link.
+     Upload to imgur.com → right-click → Copy Image Address
      ============================================================ -->
 <link rel="icon" href="https://www.eskymofanclub.org/wp-content/uploads/Escanaba-512.png" type="image/png">
 <link rel="apple-touch-icon" href="https://i.imgur.com/yourimage.png">
@@ -29,24 +29,29 @@
     --muted2: #8a95a3;
   }
 
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-
+  /* ── Hard stop all horizontal overflow ── */
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { overflow-x: hidden; }
   body {
+    overflow-x: hidden;
+    max-width: 100vw;
     background: var(--bg);
     color: var(--text);
     font-family: 'DM Sans', sans-serif;
     min-height: 100vh;
-    padding-bottom: 40px;
+    padding-bottom: 50px;
   }
 
+  /* ── HEADER ── */
   .header {
     background: var(--surface);
     border-bottom: 1px solid var(--border);
-    padding: 0 20px;
+    padding: 0 14px;
     position: sticky;
     top: 0;
     z-index: 100;
     backdrop-filter: blur(10px);
+    width: 100%;
   }
 
   .header-inner {
@@ -54,75 +59,111 @@
     margin: 0 auto;
     display: flex;
     align-items: center;
-    padding: 12px 0;
-    gap: 12px;
+    padding: 11px 0;
+    gap: 10px;
+    min-width: 0;
   }
 
   .eskymos-logo {
-    width: 40px;
-    height: 40px;
+    width: 38px; height: 38px;
     border-radius: 8px;
     flex-shrink: 0;
     object-fit: contain;
   }
 
   .logo-fallback {
-    width: 40px; height: 40px;
+    width: 38px; height: 38px;
     background: var(--accent);
     border-radius: 8px;
     display: none;
     align-items: center;
     justify-content: center;
     font-family: 'Bebas Neue', sans-serif;
-    font-size: 26px;
+    font-size: 24px;
     color: #000;
     flex-shrink: 0;
   }
 
-  .logo-text-wrap { flex: 1; }
+  .logo-text-wrap { flex: 1; min-width: 0; overflow: hidden; }
 
   .logo-name {
     font-family: 'Bebas Neue', sans-serif;
-    font-size: 22px;
+    font-size: 20px;
     letter-spacing: 1.5px;
     color: var(--text);
     line-height: 1;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 
   .logo-sub {
-    font-size: 10px;
+    font-size: 9px;
     color: var(--muted2);
-    letter-spacing: 2px;
+    letter-spacing: 1.5px;
     text-transform: uppercase;
     font-family: 'DM Mono', monospace;
     margin-top: 2px;
-  }
-
-  .last-synced-header {
-    font-size: 10px;
-    color: var(--muted);
-    font-family: 'DM Mono', monospace;
-    text-align: right;
     white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 
+  /* Refresh button */
+  .refresh-btn {
+    background: var(--accent);
+    color: #000;
+    border: none;
+    width: 34px; height: 34px;
+    border-radius: 8px;
+    font-size: 16px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    transition: opacity 0.2s, transform 0.4s;
+  }
+  .refresh-btn:active { opacity: 0.7; }
+  .refresh-btn.spinning { animation: spin 0.8s linear infinite; pointer-events: none; opacity: 0.7; }
+
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  /* ── SYNC BAR ── */
+  .sync-bar {
+    background: var(--surface2);
+    border-bottom: 1px solid var(--border);
+    padding: 6px 14px;
+    text-align: center;
+    font-size: 11px;
+    color: var(--muted2);
+    font-family: 'DM Mono', monospace;
+    width: 100%;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  /* ── STATS ── */
   .stats-bar {
     max-width: 900px;
-    margin: 20px auto 0;
-    padding: 0 20px;
+    margin: 14px auto 0;
+    padding: 0 14px;
     display: grid;
     grid-template-columns: repeat(4, 1fr);
-    gap: 12px;
+    gap: 8px;
+    width: 100%;
   }
 
   .stat-card {
     background: var(--surface);
     border: 1px solid var(--border);
-    border-radius: 12px;
-    padding: 16px;
+    border-radius: 10px;
+    padding: 11px 6px;
     text-align: center;
     position: relative;
     overflow: hidden;
+    min-width: 0;
   }
 
   .stat-card::before {
@@ -132,50 +173,50 @@
     height: 2px;
     background: var(--accent);
   }
-
   .stat-card.blue::before { background: var(--accent2); }
   .stat-card.green::before { background: var(--green); }
   .stat-card.red::before { background: var(--red); }
 
   .stat-num {
     font-family: 'Bebas Neue', sans-serif;
-    font-size: 36px;
+    font-size: 28px;
     color: var(--text);
     line-height: 1;
   }
 
   .stat-label {
-    font-size: 10px;
+    font-size: 8px;
     color: var(--muted2);
     text-transform: uppercase;
-    letter-spacing: 1.5px;
-    margin-top: 4px;
+    letter-spacing: 1px;
+    margin-top: 3px;
     font-family: 'DM Mono', monospace;
   }
 
+  /* ── MAIN LAYOUT ── */
   .main {
     max-width: 900px;
-    margin: 24px auto 0;
-    padding: 0 20px;
+    margin: 16px auto 0;
+    padding: 0 14px;
     display: grid;
-    grid-template-columns: 1fr 300px;
-    gap: 20px;
+    grid-template-columns: 1fr 270px;
+    gap: 16px;
     align-items: start;
+    width: 100%;
   }
 
-  /* Tag filter row */
+  /* ── FILTERS ── */
   .filter-row {
     display: flex;
-    gap: 8px;
+    gap: 6px;
     margin-bottom: 10px;
     flex-wrap: wrap;
-    align-items: center;
   }
 
   .filter-btn {
-    padding: 6px 14px;
+    padding: 5px 11px;
     border-radius: 20px;
-    font-size: 12px;
+    font-size: 11px;
     font-weight: 500;
     cursor: pointer;
     border: 1px solid var(--border);
@@ -183,6 +224,7 @@
     color: var(--muted2);
     transition: all 0.15s;
     font-family: 'DM Sans', sans-serif;
+    white-space: nowrap;
   }
 
   .filter-btn.active, .filter-btn:hover {
@@ -191,16 +233,16 @@
     border-color: var(--accent);
   }
 
-  /* School dropdown */
   .school-filter-row {
     display: flex;
     align-items: center;
-    gap: 10px;
-    margin-bottom: 16px;
+    gap: 8px;
+    margin-bottom: 12px;
+    min-width: 0;
   }
 
   .school-filter-label {
-    font-size: 11px;
+    font-size: 10px;
     color: var(--muted);
     font-family: 'DM Mono', monospace;
     white-space: nowrap;
@@ -208,120 +250,150 @@
 
   .school-select {
     flex: 1;
+    min-width: 0;
+    max-width: 100%;
     background: var(--surface);
     border: 1px solid var(--border);
     border-radius: 20px;
     color: var(--text);
     font-family: 'DM Sans', sans-serif;
     font-size: 12px;
-    padding: 7px 32px 7px 14px;
+    padding: 6px 30px 6px 12px;
     cursor: pointer;
     outline: none;
     appearance: none;
     -webkit-appearance: none;
     background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%238a95a3' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
     background-repeat: no-repeat;
-    background-position: right 12px center;
+    background-position: right 10px center;
     background-color: var(--surface);
     transition: border-color 0.15s;
   }
-
   .school-select:focus, .school-select:hover { border-color: var(--accent); }
   .school-select option { background: #181c22; color: var(--text); }
 
-  /* Email cards */
+  /* ── EMAIL CARDS ── */
   .email-card {
     background: var(--surface);
     border: 1px solid var(--border);
-    border-radius: 14px;
-    padding: 18px;
-    margin-bottom: 12px;
-    cursor: pointer;
-    transition: all 0.15s;
+    border-radius: 12px;
+    padding: 14px;
+    margin-bottom: 10px;
     position: relative;
     overflow: hidden;
-    animation: slideIn 0.3s ease both;
+    animation: slideIn 0.25s ease both;
+    width: 100%;
+    min-width: 0;
   }
 
-  .email-card:hover {
-    border-color: var(--accent);
-    transform: translateY(-1px);
-  }
+  .email-card:hover { border-color: var(--accent); }
 
   .email-card.unread::after {
     content: '';
     position: absolute;
-    top: 18px; right: 18px;
-    width: 8px; height: 8px;
+    top: 14px; right: 42px;
+    width: 7px; height: 7px;
     border-radius: 50%;
     background: var(--accent2);
+  }
+
+  .card-delete {
+    position: absolute;
+    top: 10px; right: 10px;
+    width: 28px; height: 28px;
+    background: transparent;
+    border: 1px solid transparent;
+    border-radius: 6px;
+    color: var(--muted);
+    font-size: 13px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.15s;
+    z-index: 2;
+  }
+  .card-delete:hover {
+    background: rgba(255,95,95,0.15);
+    border-color: var(--red);
+    color: var(--red);
   }
 
   .card-top {
     display: flex;
     align-items: flex-start;
-    gap: 12px;
-    margin-bottom: 10px;
+    gap: 10px;
+    margin-bottom: 8px;
+    padding-right: 30px;
+    min-width: 0;
   }
 
   .school-logo {
-    width: 40px; height: 40px;
-    border-radius: 10px;
+    width: 36px; height: 36px;
+    border-radius: 8px;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 16px;
+    font-size: 14px;
     font-weight: 700;
     flex-shrink: 0;
     font-family: 'Bebas Neue', sans-serif;
   }
 
-  .card-meta { flex: 1; min-width: 0; }
+  .card-meta { flex: 1; min-width: 0; overflow: hidden; }
 
   .school-name {
     font-weight: 600;
-    font-size: 15px;
+    font-size: 13px;
     color: var(--text);
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
   }
 
-  .coach-name { font-size: 12px; color: var(--muted2); margin-top: 2px; }
+  .coach-name { font-size: 11px; color: var(--muted2); margin-top: 1px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
   .card-date {
-    font-size: 11px;
+    font-size: 10px;
     color: var(--muted);
     font-family: 'DM Mono', monospace;
     white-space: nowrap;
+    flex-shrink: 0;
   }
 
   .card-subject {
-    font-size: 13px;
+    font-size: 12px;
     font-weight: 500;
     color: var(--text);
-    margin-bottom: 8px;
+    margin-bottom: 5px;
     line-height: 1.4;
+    cursor: pointer;
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
   }
 
   .card-summary {
-    font-size: 13px;
+    font-size: 11px;
     color: var(--muted2);
-    line-height: 1.6;
+    line-height: 1.5;
     display: -webkit-box;
-    -webkit-line-clamp: 3;
+    -webkit-line-clamp: 2;
     -webkit-box-orient: vertical;
     overflow: hidden;
+    cursor: pointer;
   }
 
-  .card-tags { display: flex; gap: 6px; margin-top: 12px; flex-wrap: wrap; }
+  .card-tags { display: flex; gap: 5px; margin-top: 8px; flex-wrap: wrap; }
 
   .tag {
-    padding: 3px 10px;
+    padding: 2px 8px;
     border-radius: 20px;
-    font-size: 11px;
+    font-size: 10px;
     font-weight: 500;
     font-family: 'DM Mono', monospace;
+    white-space: nowrap;
   }
 
   .tag.d1 { background: rgba(244,124,32,0.15); color: var(--accent); }
@@ -332,85 +404,80 @@
   .tag.camp { background: rgba(180,100,255,0.15); color: #c480ff; }
   .tag.scholarship { background: rgba(244,124,32,0.2); color: var(--accent); border: 1px solid var(--accent); }
 
-  .sidebar { display: flex; flex-direction: column; gap: 16px; }
+  /* ── SIDEBAR ── */
+  .sidebar { display: flex; flex-direction: column; gap: 12px; }
 
   .sidebar-card {
     background: var(--surface);
     border: 1px solid var(--border);
-    border-radius: 14px;
-    padding: 18px;
+    border-radius: 12px;
+    padding: 14px;
+    min-width: 0;
+    overflow: hidden;
   }
 
   .sidebar-title {
     font-family: 'Bebas Neue', sans-serif;
-    font-size: 18px;
+    font-size: 16px;
     letter-spacing: 1px;
     color: var(--text);
-    margin-bottom: 14px;
+    margin-bottom: 10px;
   }
 
   .school-list-item {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 10px 0;
+    padding: 8px 0;
     border-bottom: 1px solid var(--border);
     cursor: pointer;
     transition: opacity 0.15s;
+    min-width: 0;
+    gap: 8px;
   }
-
   .school-list-item:hover { opacity: 0.7; }
   .school-list-item:last-child { border-bottom: none; }
 
-  .school-list-left { display: flex; align-items: center; gap: 10px; }
-
-  .school-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
-
-  .school-list-name { font-size: 13px; font-weight: 500; color: var(--text); }
+  .school-list-left { display: flex; align-items: center; gap: 8px; min-width: 0; flex: 1; overflow: hidden; }
+  .school-dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }
+  .school-list-name { font-size: 12px; font-weight: 500; color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
   .school-list-count {
-    font-size: 11px;
+    font-size: 10px;
     font-family: 'DM Mono', monospace;
     color: var(--muted);
     background: var(--surface2);
-    padding: 2px 8px;
+    padding: 2px 7px;
     border-radius: 10px;
+    flex-shrink: 0;
   }
 
-  .timeline-item {
-    display: flex;
-    gap: 12px;
-    padding: 10px 0;
-    border-bottom: 1px solid var(--border);
-  }
+  .timeline-item { display: flex; gap: 8px; padding: 8px 0; border-bottom: 1px solid var(--border); min-width: 0; }
   .timeline-item:last-child { border-bottom: none; }
 
   .timeline-dot {
-    width: 28px; height: 28px;
+    width: 24px; height: 24px;
     border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 13px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 11px;
     flex-shrink: 0;
-    margin-top: 2px;
+    margin-top: 1px;
   }
 
-  .timeline-info { flex: 1; }
-  .timeline-action { font-size: 13px; font-weight: 500; color: var(--text); line-height: 1.4; }
-  .timeline-school { font-size: 12px; color: var(--muted2); margin-top: 2px; }
-  .timeline-date { font-size: 10px; font-family: 'DM Mono', monospace; color: var(--muted); margin-top: 3px; }
+  .timeline-info { flex: 1; min-width: 0; overflow: hidden; }
+  .timeline-action { font-size: 11px; font-weight: 500; color: var(--text); line-height: 1.3; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .timeline-school { font-size: 10px; color: var(--muted2); margin-top: 1px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .timeline-date { font-size: 9px; font-family: 'DM Mono', monospace; color: var(--muted); margin-top: 2px; }
 
-  /* Modal */
+  /* ── MODAL ── */
   .modal-overlay {
     position: fixed;
     inset: 0;
-    background: rgba(0,0,0,0.8);
+    background: rgba(0,0,0,0.85);
     z-index: 200;
     display: none;
-    align-items: center;
+    align-items: flex-end;
     justify-content: center;
-    padding: 20px;
     backdrop-filter: blur(4px);
   }
   .modal-overlay.open { display: flex; }
@@ -418,57 +485,109 @@
   .modal {
     background: var(--surface);
     border: 1px solid var(--border);
-    border-radius: 18px;
-    max-width: 600px;
+    border-radius: 20px 20px 0 0;
     width: 100%;
-    max-height: 80vh;
+    max-width: 640px;
+    max-height: 88vh;
     overflow-y: auto;
-    padding: 28px;
+    overflow-x: hidden;
+    padding: 20px 16px 44px;
     position: relative;
+    word-break: break-word;
   }
 
-  .modal-close {
-    position: absolute;
-    top: 16px; right: 16px;
-    background: var(--surface2);
-    border: none;
-    color: var(--muted2);
-    width: 32px; height: 32px;
+  .modal-handle {
+    width: 36px; height: 4px;
+    background: var(--border);
+    border-radius: 2px;
+    margin: 0 auto 18px;
+  }
+
+  .modal-top-row {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 10px;
+    margin-bottom: 4px;
+    min-width: 0;
+  }
+
+  .modal-school { font-family: 'Bebas Neue', sans-serif; font-size: 24px; letter-spacing: 1px; flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; }
+
+  .modal-delete-btn {
+    background: rgba(255,95,95,0.1);
+    border: 1px solid var(--red);
+    color: var(--red);
+    padding: 6px 12px;
     border-radius: 8px;
+    font-size: 12px;
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 500;
     cursor: pointer;
-    font-size: 16px;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+  .modal-delete-btn:hover { background: rgba(255,95,95,0.2); }
+
+  .modal-coach { font-size: 13px; color: var(--muted2); margin-bottom: 12px; }
+  .modal-subject { font-size: 15px; font-weight: 600; margin-bottom: 8px; overflow-wrap: break-word; }
+  .modal-summary { font-size: 13px; color: var(--muted2); line-height: 1.6; overflow-wrap: break-word; }
+  .modal-label { font-size: 10px; text-transform: uppercase; letter-spacing: 1.5px; color: var(--muted); font-family: 'DM Mono', monospace; margin-bottom: 5px; margin-top: 14px; }
+  .modal-body { font-size: 12px; color: var(--muted2); line-height: 1.8; background: var(--surface2); border-radius: 10px; padding: 12px; white-space: pre-wrap; overflow-wrap: break-word; word-break: break-word; }
+
+  /* ── EMPTY STATE ── */
+  .empty { text-align: center; padding: 50px 20px; color: var(--muted); }
+  .empty-icon { font-size: 42px; margin-bottom: 10px; }
+  .empty-title { font-family: 'Bebas Neue', sans-serif; font-size: 22px; color: var(--muted2); letter-spacing: 1px; margin-bottom: 8px; }
+  .empty-sub { font-size: 12px; line-height: 1.6; }
+
+  /* ── UNDO TOAST ── */
+  .toast {
+    position: fixed;
+    bottom: 28px;
+    left: 50%;
+    transform: translateX(-50%) translateY(80px);
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 11px 16px;
     display: flex;
     align-items: center;
-    justify-content: center;
+    gap: 12px;
+    font-size: 13px;
+    color: var(--text);
+    z-index: 300;
+    transition: transform 0.3s ease;
+    white-space: nowrap;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.5);
   }
-  .modal-close:hover { background: var(--border); }
+  .toast.show { transform: translateX(-50%) translateY(0); }
 
-  .modal-school { font-family: 'Bebas Neue', sans-serif; font-size: 28px; letter-spacing: 1px; margin-bottom: 4px; }
-  .modal-coach { font-size: 14px; color: var(--muted2); margin-bottom: 16px; }
-  .modal-subject { font-size: 16px; font-weight: 600; margin-bottom: 12px; }
-  .modal-summary { font-size: 14px; color: var(--muted2); line-height: 1.7; }
-  .modal-label { font-size: 10px; text-transform: uppercase; letter-spacing: 1.5px; color: var(--muted); font-family: 'DM Mono', monospace; margin-bottom: 6px; margin-top: 16px; }
-  .modal-body { font-size: 13px; color: var(--muted2); line-height: 1.8; background: var(--surface2); border-radius: 10px; padding: 16px; white-space: pre-wrap; }
-
-  .empty { text-align: center; padding: 60px 20px; color: var(--muted); }
-  .empty-icon { font-size: 48px; margin-bottom: 12px; }
-  .empty-title { font-family: 'Bebas Neue', sans-serif; font-size: 24px; color: var(--muted2); letter-spacing: 1px; margin-bottom: 8px; }
-  .empty-sub { font-size: 13px; line-height: 1.6; }
+  .toast-undo {
+    background: transparent;
+    border: 1px solid var(--accent);
+    color: var(--accent);
+    padding: 4px 12px;
+    border-radius: 6px;
+    font-size: 12px;
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 600;
+    cursor: pointer;
+  }
 
   ::-webkit-scrollbar { width: 4px; }
   ::-webkit-scrollbar-track { background: transparent; }
   ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
 
   @keyframes slideIn {
-    from { opacity: 0; transform: translateY(8px); }
+    from { opacity: 0; transform: translateY(6px); }
     to { opacity: 1; transform: translateY(0); }
   }
 
-  @media (max-width: 700px) {
+  /* ── MOBILE ── */
+  @media (max-width: 680px) {
     .main { grid-template-columns: 1fr; }
-    .stats-bar { grid-template-columns: repeat(2, 1fr); }
     .sidebar { order: -1; }
-    .last-synced-header { display: none; }
   }
 </style>
 </head>
@@ -477,26 +596,26 @@
 <header class="header">
   <div class="header-inner">
     <!-- ============================================================
-         HEADER LOGO IMAGE
-         Replace the src URL below with your own image link.
-         Upload to imgur.com → right-click image → Copy Image Address
+         HEADER LOGO — replace src URL with your imgur image link
          ============================================================ -->
     <img class="eskymos-logo" src="https://www.eskymofanclub.org/wp-content/uploads/Escanaba-512.png" alt="E"
          onerror="this.style.display='none';document.getElementById('logoFallback').style.display='flex'">
     <div class="logo-fallback" id="logoFallback">E</div>
-
     <div class="logo-text-wrap">
       <div class="logo-name">Isaac Lambert</div>
       <div class="logo-sub">Class of 2028 · Kicker · Escanaba</div>
     </div>
-    <div class="last-synced-header" id="lastSyncedHeader"></div>
+    <button class="refresh-btn" id="refreshBtn" onclick="refreshData()" title="Refresh">↻</button>
   </div>
 </header>
+
+<!-- Sync time — always visible on all screen sizes -->
+<div class="sync-bar" id="syncBar">Loading...</div>
 
 <div class="stats-bar">
   <div class="stat-card">
     <div class="stat-num" id="statTotal">—</div>
-    <div class="stat-label">Total Emails</div>
+    <div class="stat-label">Emails</div>
   </div>
   <div class="stat-card blue">
     <div class="stat-num" id="statSchools">—</div>
@@ -514,19 +633,17 @@
 
 <div class="main">
   <div>
-    <!-- Tag filters -->
     <div class="filter-row">
       <button class="filter-btn active" onclick="setTagFilter('all', this)">All</button>
       <button class="filter-btn" onclick="setTagFilter('offer', this)">🏆 Offers</button>
       <button class="filter-btn" onclick="setTagFilter('visit', this)">✈️ Visits</button>
       <button class="filter-btn" onclick="setTagFilter('camp', this)">⛺ Camps</button>
-      <button class="filter-btn" onclick="setTagFilter('scholarship', this)">💰 Scholarships</button>
+      <button class="filter-btn" onclick="setTagFilter('scholarship', this)">💰 Schol.</button>
       <button class="filter-btn" onclick="setTagFilter('d1', this)">D1</button>
       <button class="filter-btn" onclick="setTagFilter('d2', this)">D2</button>
       <button class="filter-btn" onclick="setTagFilter('d3', this)">D3</button>
     </div>
 
-    <!-- School dropdown -->
     <div class="school-filter-row">
       <span class="school-filter-label">SCHOOL</span>
       <select class="school-select" id="schoolSelect" onchange="setSchoolFilter(this.value)">
@@ -544,19 +661,22 @@
     </div>
     <div class="sidebar-card">
       <div class="sidebar-title">⚡ Recent Activity</div>
-      <div id="timeline"><div style="color:var(--muted);font-size:13px;">No recent activity.</div></div>
+      <div id="timeline"><div style="color:var(--muted);font-size:13px;">No activity yet.</div></div>
     </div>
   </div>
 </div>
 
-<!-- Modal -->
+<!-- Modal — slides up from bottom like iOS sheet -->
 <div class="modal-overlay" id="modalOverlay" onclick="closeModal(event)">
-  <div class="modal">
-    <button class="modal-close" onclick="closeModalBtn()">✕</button>
-    <div class="modal-school" id="modalSchool"></div>
+  <div class="modal" id="modalSheet">
+    <div class="modal-handle"></div>
+    <div class="modal-top-row">
+      <div class="modal-school" id="modalSchool"></div>
+      <button class="modal-delete-btn" onclick="deleteFromModal()">🗑 Delete</button>
+    </div>
     <div class="modal-coach" id="modalCoach"></div>
     <div class="card-tags" id="modalTags"></div>
-    <div class="modal-label" style="margin-top:16px;">Subject</div>
+    <div class="modal-label" style="margin-top:14px;">Subject</div>
     <div class="modal-subject" id="modalSubject"></div>
     <div class="modal-label">Summary</div>
     <div class="modal-summary" id="modalSummary"></div>
@@ -565,18 +685,28 @@
   </div>
 </div>
 
+<!-- Undo toast -->
+<div class="toast" id="toast">
+  <span>Email hidden</span>
+  <button class="toast-undo" onclick="undoDelete()">UNDO</button>
+</div>
+
 <script>
 let allEmails = [];
+let hiddenIds = new Set(JSON.parse(localStorage.getItem('hiddenIds') || '[]'));
 let currentTagFilter = 'all';
 let currentSchoolFilter = 'all';
+let currentModalId = null;
+let lastDeletedId = null;
+let toastTimer = null;
 
 const COLORS = ['#f47c20','#4a9eff','#3ddc97','#ff5f5f','#c480ff','#ff9f40','#4affd4','#ff6b9d','#a0ff4a'];
 const schoolColorMap = {};
 let colorIdx = 0;
 
-function getColor(school) {
-  if (!schoolColorMap[school]) schoolColorMap[school] = COLORS[colorIdx++ % COLORS.length];
-  return schoolColorMap[school];
+function getColor(s) {
+  if (!schoolColorMap[s]) schoolColorMap[s] = COLORS[colorIdx++ % COLORS.length];
+  return schoolColorMap[s];
 }
 
 function getInitials(name) {
@@ -591,14 +721,36 @@ function tagLabel(t) {
   return { d1:'D1', d2:'D2', d3:'D3', offer:'🏆 Offer', visit:'✈️ Visit', camp:'⛺ Camp', scholarship:'💰 Scholarship' }[t] || t.toUpperCase();
 }
 
+function saveHidden() {
+  localStorage.setItem('hiddenIds', JSON.stringify([...hiddenIds]));
+}
+
+function visibleEmails() {
+  return allEmails.filter(e => !hiddenIds.has(e.id));
+}
+
+// ── REFRESH ──────────────────────────────────────────────────────────────────
+
+async function refreshData() {
+  const btn = document.getElementById('refreshBtn');
+  btn.classList.add('spinning');
+  document.getElementById('syncBar').textContent = 'Refreshing...';
+  await loadData();
+  btn.classList.remove('spinning');
+}
+
+// ── LOAD DATA ─────────────────────────────────────────────────────────────────
+
 async function loadData() {
   try {
+    // Cache-busting ensures we always get the latest data.json
     const res = await fetch('data.json?t=' + Date.now());
     if (!res.ok) throw new Error();
     const data = await res.json();
     renderDashboard(data);
   } catch(e) {
     renderEmpty();
+    document.getElementById('syncBar').textContent = 'Could not load data — check your connection.';
   }
 }
 
@@ -616,23 +768,34 @@ function renderEmpty() {
 
 function renderDashboard(data) {
   allEmails = data.emails || [];
+  const visible = visibleEmails();
 
+  // Stats
   const weekAgo = new Date(Date.now() - 7*24*60*60*1000);
-  const thisWeek = allEmails.filter(e => new Date(e.date) >= weekAgo).length;
-  const schools = [...new Set(allEmails.map(e => e.school))];
-  const offers = allEmails.filter(e => e.tags && e.tags.includes('offer')).length;
+  document.getElementById('statTotal').textContent = visible.length;
+  document.getElementById('statSchools').textContent = new Set(visible.map(e => e.school)).size;
+  document.getElementById('statOffers').textContent = visible.filter(e => e.tags && e.tags.includes('offer')).length;
+  document.getElementById('statNew').textContent = visible.filter(e => new Date(e.date) >= weekAgo).length;
 
-  document.getElementById('statTotal').textContent = allEmails.length;
-  document.getElementById('statSchools').textContent = schools.length;
-  document.getElementById('statOffers').textContent = offers;
-  document.getElementById('statNew').textContent = thisWeek;
+  // Sync time in EST with full date + time
+  if (data.lastSynced) {
+    const d = new Date(data.lastSynced);
+    const estStr = d.toLocaleString('en-US', {
+      timeZone: 'America/New_York',
+      month: 'short', day: 'numeric', year: 'numeric',
+      hour: 'numeric', minute: '2-digit', hour12: true
+    });
+    document.getElementById('syncBar').textContent = `Last synced: ${estStr} EST`;
+  } else {
+    document.getElementById('syncBar').textContent = 'Never synced — run the sync script first';
+  }
 
-  // Populate school dropdown
+  // School dropdown
   const select = document.getElementById('schoolSelect');
   const prevVal = select.value;
   select.innerHTML = '<option value="all">All Schools</option>';
   const schoolCounts = {};
-  allEmails.forEach(e => schoolCounts[e.school] = (schoolCounts[e.school] || 0) + 1);
+  visible.forEach(e => schoolCounts[e.school] = (schoolCounts[e.school] || 0) + 1);
   Object.entries(schoolCounts).sort((a,b) => b[1]-a[1]).forEach(([s, c]) => {
     const opt = document.createElement('option');
     opt.value = s;
@@ -641,7 +804,7 @@ function renderDashboard(data) {
   });
   if (prevVal) select.value = prevVal;
 
-  // School sidebar — clicking filters by that school
+  // School sidebar
   const top = Object.entries(schoolCounts).sort((a,b)=>b[1]-a[1]).slice(0,7);
   document.getElementById('schoolList').innerHTML = top.length ? top.map(([s,c]) => `
     <div class="school-list-item" onclick="filterBySchool('${s.replace(/'/g,"\\'")}')">
@@ -653,7 +816,7 @@ function renderDashboard(data) {
     </div>`).join('') : '<div style="color:var(--muted);font-size:13px;">No schools yet.</div>';
 
   // Timeline
-  const recent = [...allEmails].sort((a,b)=>new Date(b.date)-new Date(a.date)).slice(0,5);
+  const recent = [...visible].sort((a,b)=>new Date(b.date)-new Date(a.date)).slice(0,5);
   const tlMap = { offer:{i:'🏆',bg:'rgba(61,220,151,0.2)'}, visit:{i:'✈️',bg:'rgba(255,95,95,0.2)'}, camp:{i:'⛺',bg:'rgba(180,100,255,0.2)'}, scholarship:{i:'💰',bg:'rgba(244,124,32,0.2)'}, default:{i:'📧',bg:'rgba(90,100,117,0.2)'} };
   document.getElementById('timeline').innerHTML = recent.length ? recent.map(e => {
     const tag = e.tags && e.tags[0] ? e.tags[0] : 'default';
@@ -668,24 +831,21 @@ function renderDashboard(data) {
     </div>`;
   }).join('') : '<div style="color:var(--muted);font-size:13px;">No activity yet.</div>';
 
-  if (data.lastSynced) {
-    const d = new Date(data.lastSynced);
-    document.getElementById('lastSyncedHeader').textContent = 'Synced ' + d.toLocaleDateString('en-US',{month:'short',day:'numeric'});
-  }
-
   renderEmails();
 }
 
-function getFilteredEmails() {
-  return allEmails.filter(e => {
-    const tagMatch = currentTagFilter === 'all' || (e.tags && e.tags.includes(currentTagFilter));
-    const schoolMatch = currentSchoolFilter === 'all' || e.school === currentSchoolFilter;
-    return tagMatch && schoolMatch;
+// ── RENDER EMAILS ─────────────────────────────────────────────────────────────
+
+function getFiltered() {
+  return visibleEmails().filter(e => {
+    const tagOk = currentTagFilter === 'all' || (e.tags && e.tags.includes(currentTagFilter));
+    const schoolOk = currentSchoolFilter === 'all' || e.school === currentSchoolFilter;
+    return tagOk && schoolOk;
   });
 }
 
 function renderEmails() {
-  const sorted = [...getFilteredEmails()].sort((a,b) => new Date(b.date)-new Date(a.date));
+  const sorted = [...getFiltered()].sort((a,b) => new Date(b.date)-new Date(a.date));
 
   if (!sorted.length) {
     document.getElementById('emailList').innerHTML = `
@@ -697,21 +857,24 @@ function renderEmails() {
     return;
   }
 
-  document.getElementById('emailList').innerHTML = sorted.map((e,i) => `
-    <div class="email-card ${e.unread?'unread':''}" onclick="openModal('${e.id}')" style="animation-delay:${i*0.04}s">
-      <div class="card-top">
+  document.getElementById('emailList').innerHTML = sorted.map((e, i) => `
+    <div class="email-card ${e.unread ? 'unread' : ''}" style="animation-delay:${i*0.03}s">
+      <button class="card-delete" onclick="deleteEmail('${e.id}', event)" title="Hide">🗑</button>
+      <div class="card-top" onclick="openModal('${e.id}')">
         <div class="school-logo" style="background:${getColor(e.school)}22;color:${getColor(e.school)}">${getInitials(e.school)}</div>
         <div class="card-meta">
           <div class="school-name">${e.school}</div>
-          <div class="coach-name">${e.coach||'Recruiting Staff'}</div>
+          <div class="coach-name">${e.coach || 'Recruiting Staff'}</div>
         </div>
         <div class="card-date">${formatDate(e.date)}</div>
       </div>
-      <div class="card-subject">${e.subject}</div>
-      <div class="card-summary">${e.summary}</div>
+      <div class="card-subject" onclick="openModal('${e.id}')">${e.subject}</div>
+      <div class="card-summary" onclick="openModal('${e.id}')">${e.summary}</div>
       <div class="card-tags">${(e.tags||[]).map(t=>`<span class="tag ${t}">${tagLabel(t)}</span>`).join('')}</div>
     </div>`).join('');
 }
+
+// ── FILTERS ───────────────────────────────────────────────────────────────────
 
 function setTagFilter(f, btn) {
   currentTagFilter = f;
@@ -725,18 +888,66 @@ function setSchoolFilter(val) {
   renderEmails();
 }
 
-// Clicking a school in the sidebar sets the dropdown and filters
 function filterBySchool(school) {
   currentSchoolFilter = school;
   document.getElementById('schoolSelect').value = school;
   renderEmails();
-  // Scroll to email list on mobile
   document.getElementById('emailList').scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
+
+// ── DELETE / UNDO ─────────────────────────────────────────────────────────────
+
+function deleteEmail(id, event) {
+  if (event) event.stopPropagation();
+  lastDeletedId = id;
+  hiddenIds.add(id);
+  saveHidden();
+  renderEmails();
+  renderDashboardCounts();
+  showToast();
+  closeModalBtn();
+}
+
+function deleteFromModal() {
+  if (currentModalId) deleteEmail(currentModalId, null);
+}
+
+function undoDelete() {
+  if (lastDeletedId) {
+    hiddenIds.delete(lastDeletedId);
+    saveHidden();
+    lastDeletedId = null;
+    renderEmails();
+    renderDashboardCounts();
+    hideToast();
+  }
+}
+
+function renderDashboardCounts() {
+  const visible = visibleEmails();
+  const weekAgo = new Date(Date.now() - 7*24*60*60*1000);
+  document.getElementById('statTotal').textContent = visible.length;
+  document.getElementById('statSchools').textContent = new Set(visible.map(e => e.school)).size;
+  document.getElementById('statOffers').textContent = visible.filter(e => e.tags && e.tags.includes('offer')).length;
+  document.getElementById('statNew').textContent = visible.filter(e => new Date(e.date) >= weekAgo).length;
+}
+
+function showToast() {
+  clearTimeout(toastTimer);
+  document.getElementById('toast').classList.add('show');
+  toastTimer = setTimeout(hideToast, 4000);
+}
+
+function hideToast() {
+  document.getElementById('toast').classList.remove('show');
+}
+
+// ── MODAL ─────────────────────────────────────────────────────────────────────
 
 function openModal(id) {
   const e = allEmails.find(x => x.id === id);
   if (!e) return;
+  currentModalId = id;
   e.unread = false;
   document.getElementById('modalSchool').textContent = e.school;
   document.getElementById('modalCoach').textContent = e.coach || 'Recruiting Staff';
@@ -748,8 +959,14 @@ function openModal(id) {
   renderEmails();
 }
 
-function closeModal(e) { if (e.target === document.getElementById('modalOverlay')) closeModalBtn(); }
-function closeModalBtn() { document.getElementById('modalOverlay').classList.remove('open'); }
+function closeModal(e) {
+  if (e.target === document.getElementById('modalOverlay')) closeModalBtn();
+}
+
+function closeModalBtn() {
+  document.getElementById('modalOverlay').classList.remove('open');
+  currentModalId = null;
+}
 
 if ('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js').catch(()=>{});
 
