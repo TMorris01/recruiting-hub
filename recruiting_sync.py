@@ -1,9 +1,8 @@
 """
 recruiting_sync.py
 ==================
-Reads your Gmail for recruiting emails, summarizes them with Claude AI,
-and saves a data.json file that your dashboard website reads.
-Works both locally AND automatically via GitHub Actions.
+Reads your Gmail for recruiting emails and saves a data.json file.
+100% FREE - no AI API needed. Uses smart keyword detection instead.
 """
 
 import os
@@ -17,7 +16,6 @@ from google.auth.transport.requests import Request
 from google.oauth2.credentials import Credentials
 from google_auth_oauthlib.flow import InstalledAppFlow
 from googleapiclient.discovery import build
-import anthropic
 
 # ── CONFIG ───────────────────────────────────────────────────────────────────
 
@@ -36,19 +34,15 @@ SCOPES = ['https://www.googleapis.com/auth/gmail.readonly']
 def get_gmail_service():
     creds = None
 
-    # Check if running in GitHub Actions (token stored as secret)
     gmail_token = os.environ.get('GMAIL_TOKEN')
     if gmail_token:
         print("🔑 Using GMAIL_TOKEN from GitHub secret...")
         token_data = json.loads(gmail_token)
         creds = Credentials.from_authorized_user_info(token_data, SCOPES)
-
-    # Otherwise use local token.json file
     elif os.path.exists('token.json'):
         print("🔑 Using local token.json...")
         creds = Credentials.from_authorized_user_file('token.json', SCOPES)
 
-    # Refresh if expired
     if creds and creds.expired and creds.refresh_token:
         print("🔄 Refreshing token...")
         creds.refresh(Request())
@@ -56,7 +50,6 @@ def get_gmail_service():
             with open('token.json', 'w') as f:
                 f.write(creds.to_json())
 
-    # If no creds at all, run local OAuth flow
     if not creds or not creds.valid:
         if os.environ.get('GMAIL_TOKEN'):
             raise Exception("❌ GMAIL_TOKEN secret is invalid or expired. Re-run locally to refresh.")
@@ -113,51 +106,153 @@ def parse_email(service, msg_id):
         'snippet': msg.get('snippet', ''),
     }
 
-# ── AI CLASSIFICATION ─────────────────────────────────────────────────────────
+# ── FREE RULE-BASED CLASSIFICATION ───────────────────────────────────────────
 
-def classify_email(client, email):
-    prompt = f"""You are helping a high school football kicker (Class of 2028) organize their college recruiting emails.
+# Known D1, D2, D3 keywords to help tag division
+D1_KEYWORDS = [
+    'sec ', 'big ten', 'big 12', 'acc ', 'pac-12', 'pac 12', 'american athletic',
+    'mountain west', 'sun belt', 'conference usa', 'mac ', 'mid-american',
+    'division i', 'division 1', 'fbs', 'fcs'
+]
+D2_KEYWORDS = ['division ii', 'division 2', 'division two', 'super region', 'gsac', 'nsic', 'gliac']
+D3_KEYWORDS = ['division iii', 'division 3', 'division three', 'd3', 'nescac', 'odac', 'centennial']
 
-Analyze this email and return a JSON object with these exact fields:
-- school: (string) The college/university name, or "Unknown" if unclear
-- coach: (string) The coach or staff member's name, or "Recruiting Staff" if unclear
-- summary: (string) A 2-3 sentence summary of what this email is about and what action (if any) is needed
-- tags: (array of strings) Include any relevant tags from this list ONLY: ["d1", "d2", "d3", "offer", "visit", "camp", "scholarship"]
-- isRecruiting: (boolean) true if this is genuinely a college football recruiting email, false if spam/unrelated
+OFFER_KEYWORDS = ['scholarship offer', 'offer of admission', 'full scholarship', 'we are offering',
+                  'pleased to offer', 'official offer', 'extend an offer', 'offer you a scholarship']
+VISIT_KEYWORDS = ['official visit', 'unofficial visit', 'campus visit', 'visit us', 'invite you to visit',
+                  'come visit', 'visit our campus', 'visit weekend']
+CAMP_KEYWORDS = ['camp', 'combine', 'showcase', 'clinic', 'kicking camp', 'prospect day']
+SCHOLARSHIP_KEYWORDS = ['scholarship', 'full ride', 'financial aid', 'athletic scholarship', 'tuition']
 
-EMAIL SUBJECT: {email['subject']}
-FROM: {email['sender']}
-DATE: {email['date']}
+SCHOOL_PATTERNS = [
+    r'university of [\w\s]+',
+    r'[\w\s]+ university',
+    r'[\w\s]+ college',
+    r'[\w\s]+ state university',
+    r'[\w\s]+ state college',
+]
 
-EMAIL BODY:
-{email['body'] or email['snippet']}
+NOT_RECRUITING = ['unsubscribe', 'newsletter', 'promo', 'sale', 'deal', 'offer expires',
+                  'click here to unsubscribe', 'marketing', 'advertisement']
 
-Return ONLY a valid JSON object, no other text."""
 
-    try:
-        message = client.messages.create(
-            model="claude-haiku-4-5-20251001",
-            max_tokens=400,
-            messages=[{"role": "user", "content": prompt}]
-        )
-        response_text = message.content[0].text.strip()
-        if response_text.startswith('```'):
-            response_text = re.sub(r'```json?\n?', '', response_text).rstrip('`').strip()
-        return json.loads(response_text)
-    except Exception as e:
-        print(f"  AI error for '{email['subject']}': {e}")
-        return {
-            'school': 'Unknown',
-            'coach': 'Recruiting Staff',
-            'summary': email['snippet'],
-            'tags': [],
-            'isRecruiting': True
-        }
+def extract_school(sender, body, subject):
+    """Try to extract school name from sender domain or body text."""
+    # Try to find school name in body
+    text = (body + ' ' + subject).lower()
+    for pattern in SCHOOL_PATTERNS:
+        match = re.search(pattern, text, re.IGNORECASE)
+        if match:
+            name = match.group(0).strip().title()
+            if len(name) > 5:
+                return name
+
+    # Try sender name (e.g. "Coach Smith <coach@umich.edu>")
+    sender_name = re.match(r'^([^<@]+)', sender)
+    if sender_name:
+        name = sender_name.group(1).strip()
+        if name and len(name) > 3:
+            return name
+
+    # Try email domain (umich.edu -> University of Michigan style)
+    domain_match = re.search(r'@([\w.]+\.edu)', sender)
+    if domain_match:
+        domain = domain_match.group(1).replace('.edu', '').replace('.', ' ').title()
+        return domain
+
+    return 'Unknown School'
+
+
+def extract_coach(sender, body):
+    """Try to extract coach name."""
+    # Look for "Coach [Name]" or "- [Name]" signature patterns
+    coach_match = re.search(r'coach\s+([A-Z][a-z]+\s+[A-Z][a-z]+)', body, re.IGNORECASE)
+    if coach_match:
+        return 'Coach ' + coach_match.group(1).title()
+
+    signed_match = re.search(r'(?:sincerely|regards|best|go \w+)[,\n\s]+([A-Z][a-z]+ [A-Z][a-z]+)', body, re.IGNORECASE)
+    if signed_match:
+        return signed_match.group(1).title()
+
+    sender_name = re.match(r'^([^<]+)', sender)
+    if sender_name:
+        name = sender_name.group(1).strip().strip('"')
+        if name and '@' not in name and len(name) > 3:
+            return name
+
+    return 'Recruiting Staff'
+
+
+def classify_email(email):
+    """Rule-based classification - completely free."""
+    text = ((email['subject'] or '') + ' ' + (email['body'] or '') + ' ' + (email['snippet'] or '')).lower()
+
+    # Check if this is spam/not recruiting
+    for kw in NOT_RECRUITING:
+        if kw in text:
+            return None
+
+    # Must contain at least one recruiting keyword to be included
+    recruiting_keywords = ['kicker', 'recruit', 'football', 'scholarship', 'visit', 'offer',
+                           'camp', 'program', 'roster', 'signing', 'commit', 'athletic']
+    if not any(kw in text for kw in recruiting_keywords):
+        return None
+
+    # Detect tags
+    tags = []
+
+    if any(kw in text for kw in OFFER_KEYWORDS):
+        tags.append('offer')
+    if any(kw in text for kw in SCHOLARSHIP_KEYWORDS):
+        if 'scholarship' not in [t for t in tags]:
+            tags.append('scholarship')
+    if any(kw in text for kw in VISIT_KEYWORDS):
+        tags.append('visit')
+    if any(kw in text for kw in CAMP_KEYWORDS):
+        tags.append('camp')
+
+    # Division detection
+    if any(kw in text for kw in D1_KEYWORDS):
+        tags.append('d1')
+    elif any(kw in text for kw in D2_KEYWORDS):
+        tags.append('d2')
+    elif any(kw in text for kw in D3_KEYWORDS):
+        tags.append('d3')
+
+    # Build a simple summary from the snippet + detected tags
+    summary_parts = []
+    if 'offer' in tags:
+        summary_parts.append("📩 Scholarship offer received.")
+    if 'visit' in tags:
+        summary_parts.append("✈️ Campus visit mentioned.")
+    if 'camp' in tags:
+        summary_parts.append("⛺ Camp or showcase invitation.")
+
+    # Use first 2 sentences of snippet as summary base
+    snippet = email['snippet'] or ''
+    sentences = re.split(r'(?<=[.!?])\s+', snippet)
+    base_summary = ' '.join(sentences[:2]) if sentences else snippet[:200]
+
+    summary = ' '.join(summary_parts)
+    if base_summary:
+        summary = (summary + ' ' + base_summary).strip()
+    if not summary:
+        summary = f"Email from {email['senderName']} regarding football recruiting."
+
+    school = extract_school(email['sender'], email['body'] or '', email['subject'])
+    coach = extract_coach(email['sender'], email['body'] or '')
+
+    return {
+        'school': school,
+        'coach': coach,
+        'summary': summary[:400],
+        'tags': tags,
+    }
 
 # ── MAIN ──────────────────────────────────────────────────────────────────────
 
 def main():
-    print("🏈 Recruiting Email Sync Starting...")
+    print("🏈 Recruiting Email Sync Starting (FREE mode)...")
     print("=" * 50)
 
     existing_ids = set()
@@ -184,35 +279,30 @@ def main():
     if not new_messages:
         print("✅ Nothing new!")
     else:
-        api_key = os.environ.get('ANTHROPIC_API_KEY')
-        if not api_key:
-            raise ValueError("❌ Set your ANTHROPIC_API_KEY environment variable!")
-        claude = anthropic.Anthropic(api_key=api_key)
-
         new_emails = []
         for i, msg in enumerate(new_messages):
             print(f"  [{i+1}/{len(new_messages)}] Processing...")
             try:
                 email = parse_email(service, msg['id'])
-                classification = classify_email(claude, email)
+                classification = classify_email(email)
 
-                if not classification.get('isRecruiting', True):
+                if classification is None:
                     print(f"    ⏭ Skipping (not recruiting): {email['subject']}")
                     continue
 
                 merged = {
                     'id': email['id'],
-                    'school': classification.get('school', 'Unknown'),
-                    'coach': classification.get('coach', 'Recruiting Staff'),
+                    'school': classification['school'],
+                    'coach': classification['coach'],
                     'subject': email['subject'],
-                    'summary': classification.get('summary', email['snippet']),
+                    'summary': classification['summary'],
                     'body': email['body'],
                     'date': email['date'],
-                    'tags': classification.get('tags', []),
+                    'tags': classification['tags'],
                     'unread': True,
                 }
                 new_emails.append(merged)
-                print(f"    ✅ {classification.get('school', '?')} — {email['subject'][:50]}")
+                print(f"    ✅ {classification['school']} — {email['subject'][:50]}")
             except Exception as e:
                 print(f"    ❌ Error: {e}")
 
