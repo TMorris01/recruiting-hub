@@ -2,8 +2,8 @@ name: Sync Recruiting Emails
 
 on:
   schedule:
-    - cron: '0 8 * * *'  # Runs every day at 8:00 AM UTC (3 AM Eastern, 2 AM Central)
-  workflow_dispatch:       # Also lets you run it manually with a button on GitHub
+    - cron: '0 8 * * *'  # Every day at 8:00 AM UTC
+  workflow_dispatch:       # Manual trigger button on GitHub
 
 jobs:
   sync:
@@ -20,11 +20,10 @@ jobs:
 
       - name: Install dependencies
         run: |
-          pip install google-auth google-auth-oauthlib google-api-python-client anthropic
+          pip install google-auth google-auth-oauthlib google-api-python-client
 
       - name: Run sync script
         env:
-          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
           GMAIL_TOKEN: ${{ secrets.GMAIL_TOKEN }}
         run: python recruiting_sync.py
 
