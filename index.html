@@ -1,0 +1,833 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Recruiting Hub — Class of 2028</title>
+<link rel="manifest" href="manifest.json">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0c0f;
+    --surface: #111418;
+    --surface2: #181c22;
+    --border: #1e2530;
+    --accent: #e8c84a;
+    --accent2: #4a9eff;
+    --green: #3ddc97;
+    --red: #ff5f5f;
+    --text: #e8edf3;
+    --muted: #5a6475;
+    --muted2: #8a95a3;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    min-height: 100vh;
+    padding-bottom: 40px;
+  }
+
+  /* Header */
+  .header {
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    padding: 0 20px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    backdrop-filter: blur(10px);
+  }
+
+  .header-inner {
+    max-width: 900px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 0;
+    gap: 12px;
+  }
+
+  .logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .logo-icon {
+    width: 36px;
+    height: 36px;
+    background: var(--accent);
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+  }
+
+  .logo-text {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 22px;
+    letter-spacing: 1px;
+    color: var(--text);
+    line-height: 1;
+  }
+
+  .logo-sub {
+    font-size: 10px;
+    color: var(--muted2);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    font-family: 'DM Mono', monospace;
+  }
+
+  .sync-btn {
+    background: var(--accent);
+    color: #000;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 8px;
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 600;
+    font-size: 13px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    transition: opacity 0.2s;
+    white-space: nowrap;
+  }
+  .sync-btn:hover { opacity: 0.85; }
+  .sync-btn:active { opacity: 0.7; }
+
+  /* Stats bar */
+  .stats-bar {
+    max-width: 900px;
+    margin: 20px auto 0;
+    padding: 0 20px;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+  }
+
+  .stat-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 16px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .stat-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: var(--accent);
+  }
+
+  .stat-card.blue::before { background: var(--accent2); }
+  .stat-card.green::before { background: var(--green); }
+  .stat-card.red::before { background: var(--red); }
+
+  .stat-num {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 36px;
+    color: var(--text);
+    line-height: 1;
+  }
+
+  .stat-label {
+    font-size: 10px;
+    color: var(--muted2);
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    margin-top: 4px;
+    font-family: 'DM Mono', monospace;
+  }
+
+  /* Main content */
+  .main {
+    max-width: 900px;
+    margin: 24px auto 0;
+    padding: 0 20px;
+    display: grid;
+    grid-template-columns: 1fr 300px;
+    gap: 20px;
+    align-items: start;
+  }
+
+  /* Filter tabs */
+  .filter-row {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 16px;
+    flex-wrap: wrap;
+  }
+
+  .filter-btn {
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 500;
+    cursor: pointer;
+    border: 1px solid var(--border);
+    background: transparent;
+    color: var(--muted2);
+    transition: all 0.15s;
+    font-family: 'DM Sans', sans-serif;
+  }
+
+  .filter-btn.active, .filter-btn:hover {
+    background: var(--accent);
+    color: #000;
+    border-color: var(--accent);
+  }
+
+  /* Email cards */
+  .email-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 18px;
+    margin-bottom: 12px;
+    cursor: pointer;
+    transition: all 0.15s;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .email-card:hover {
+    border-color: var(--accent);
+    transform: translateY(-1px);
+  }
+
+  .email-card.unread::after {
+    content: '';
+    position: absolute;
+    top: 18px; right: 18px;
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background: var(--accent2);
+  }
+
+  .card-top {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    margin-bottom: 10px;
+  }
+
+  .school-logo {
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+    font-weight: 700;
+    flex-shrink: 0;
+    font-family: 'Bebas Neue', sans-serif;
+    letter-spacing: 0.5px;
+  }
+
+  .card-meta {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .school-name {
+    font-weight: 600;
+    font-size: 15px;
+    color: var(--text);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .coach-name {
+    font-size: 12px;
+    color: var(--muted2);
+    margin-top: 2px;
+  }
+
+  .card-date {
+    font-size: 11px;
+    color: var(--muted);
+    font-family: 'DM Mono', monospace;
+    white-space: nowrap;
+  }
+
+  .card-subject {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text);
+    margin-bottom: 8px;
+    line-height: 1.4;
+  }
+
+  .card-summary {
+    font-size: 13px;
+    color: var(--muted2);
+    line-height: 1.6;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  .card-tags {
+    display: flex;
+    gap: 6px;
+    margin-top: 12px;
+    flex-wrap: wrap;
+  }
+
+  .tag {
+    padding: 3px 10px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 500;
+    font-family: 'DM Mono', monospace;
+  }
+
+  .tag.d1 { background: rgba(232,200,74,0.15); color: var(--accent); }
+  .tag.d2 { background: rgba(74,158,255,0.15); color: var(--accent2); }
+  .tag.d3 { background: rgba(90,100,117,0.15); color: var(--muted2); }
+  .tag.offer { background: rgba(61,220,151,0.15); color: var(--green); }
+  .tag.visit { background: rgba(255,95,95,0.15); color: var(--red); }
+  .tag.camp { background: rgba(180,100,255,0.15); color: #c480ff; }
+  .tag.scholarship { background: rgba(232,200,74,0.2); color: var(--accent); border: 1px solid var(--accent); }
+
+  /* Sidebar */
+  .sidebar { display: flex; flex-direction: column; gap: 16px; }
+
+  .sidebar-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 18px;
+  }
+
+  .sidebar-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 18px;
+    letter-spacing: 1px;
+    color: var(--text);
+    margin-bottom: 14px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .school-list-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 0;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .school-list-item:last-child { border-bottom: none; }
+
+  .school-list-left {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .school-dot {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+
+  .school-list-name {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text);
+  }
+
+  .school-list-count {
+    font-size: 11px;
+    font-family: 'DM Mono', monospace;
+    color: var(--muted);
+    background: var(--surface2);
+    padding: 2px 8px;
+    border-radius: 10px;
+  }
+
+  /* Timeline */
+  .timeline-item {
+    display: flex;
+    gap: 12px;
+    padding: 10px 0;
+    border-bottom: 1px solid var(--border);
+  }
+  .timeline-item:last-child { border-bottom: none; }
+
+  .timeline-dot {
+    width: 28px; height: 28px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 13px;
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+
+  .timeline-info { flex: 1; }
+
+  .timeline-action {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text);
+    line-height: 1.4;
+  }
+
+  .timeline-school {
+    font-size: 12px;
+    color: var(--muted2);
+    margin-top: 2px;
+  }
+
+  .timeline-date {
+    font-size: 10px;
+    font-family: 'DM Mono', monospace;
+    color: var(--muted);
+    margin-top: 3px;
+  }
+
+  /* Modal */
+  .modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.8);
+    z-index: 200;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    backdrop-filter: blur(4px);
+  }
+
+  .modal-overlay.open { display: flex; }
+
+  .modal {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 18px;
+    max-width: 600px;
+    width: 100%;
+    max-height: 80vh;
+    overflow-y: auto;
+    padding: 28px;
+    position: relative;
+  }
+
+  .modal-close {
+    position: absolute;
+    top: 16px; right: 16px;
+    background: var(--surface2);
+    border: none;
+    color: var(--muted2);
+    width: 32px; height: 32px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.15s;
+  }
+  .modal-close:hover { background: var(--border); }
+
+  .modal-school { font-family: 'Bebas Neue', sans-serif; font-size: 28px; letter-spacing: 1px; margin-bottom: 4px; }
+  .modal-coach { font-size: 14px; color: var(--muted2); margin-bottom: 16px; }
+  .modal-subject { font-size: 16px; font-weight: 600; margin-bottom: 12px; }
+  .modal-summary { font-size: 14px; color: var(--muted2); line-height: 1.7; margin-bottom: 20px; }
+  .modal-label { font-size: 10px; text-transform: uppercase; letter-spacing: 1.5px; color: var(--muted); font-family: 'DM Mono', monospace; margin-bottom: 6px; margin-top: 16px; }
+  .modal-body { font-size: 13px; color: var(--muted2); line-height: 1.8; background: var(--surface2); border-radius: 10px; padding: 16px; white-space: pre-wrap; }
+
+  /* Empty state */
+  .empty {
+    text-align: center;
+    padding: 60px 20px;
+    color: var(--muted);
+  }
+  .empty-icon { font-size: 48px; margin-bottom: 12px; }
+  .empty-title { font-family: 'Bebas Neue', sans-serif; font-size: 24px; color: var(--muted2); letter-spacing: 1px; margin-bottom: 8px; }
+  .empty-sub { font-size: 13px; line-height: 1.6; }
+
+  /* Last synced */
+  .last-synced {
+    text-align: center;
+    font-size: 11px;
+    color: var(--muted);
+    font-family: 'DM Mono', monospace;
+    padding: 20px;
+    max-width: 900px;
+    margin: 0 auto;
+  }
+
+  /* Scrollbar */
+  ::-webkit-scrollbar { width: 4px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+
+  @media (max-width: 700px) {
+    .main { grid-template-columns: 1fr; }
+    .stats-bar { grid-template-columns: repeat(2, 1fr); }
+    .sidebar { order: -1; }
+  }
+
+  /* Pulse animation for sync btn */
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.5; }
+  }
+  .syncing { animation: pulse 1s infinite; pointer-events: none; }
+
+  /* Card entrance */
+  @keyframes slideIn {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .email-card { animation: slideIn 0.3s ease both; }
+</style>
+</head>
+<body>
+
+<header class="header">
+  <div class="header-inner">
+    <div class="logo">
+      <div class="logo-icon">🏈</div>
+      <div>
+        <div class="logo-text">Recruiting Hub</div>
+        <div class="logo-sub">Class of 2028 · Kicker</div>
+      </div>
+    </div>
+    <button class="sync-btn" id="syncBtn" onclick="loadData()">
+      ⟳ Refresh
+    </button>
+  </div>
+</header>
+
+<div class="stats-bar" id="statsBar">
+  <div class="stat-card">
+    <div class="stat-num" id="statTotal">—</div>
+    <div class="stat-label">Total Emails</div>
+  </div>
+  <div class="stat-card blue">
+    <div class="stat-num" id="statSchools">—</div>
+    <div class="stat-label">Schools</div>
+  </div>
+  <div class="stat-card green">
+    <div class="stat-num" id="statOffers">—</div>
+    <div class="stat-label">Offers</div>
+  </div>
+  <div class="stat-card red">
+    <div class="stat-num" id="statNew">—</div>
+    <div class="stat-label">This Week</div>
+  </div>
+</div>
+
+<div class="main">
+  <div>
+    <div class="filter-row" id="filterRow">
+      <button class="filter-btn active" onclick="setFilter('all', this)">All</button>
+      <button class="filter-btn" onclick="setFilter('offer', this)">Offers</button>
+      <button class="filter-btn" onclick="setFilter('visit', this)">Visits</button>
+      <button class="filter-btn" onclick="setFilter('camp', this)">Camps</button>
+      <button class="filter-btn" onclick="setFilter('d1', this)">D1</button>
+    </div>
+
+    <div id="emailList">
+      <div class="empty">
+        <div class="empty-icon">📬</div>
+        <div class="empty-title">No Emails Yet</div>
+        <div class="empty-sub">Run the Python script to sync your recruiting emails.<br>They'll appear here automatically.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="sidebar">
+    <div class="sidebar-card">
+      <div class="sidebar-title">🏫 Top Schools</div>
+      <div id="schoolList"><div style="color:var(--muted);font-size:13px;">Loading...</div></div>
+    </div>
+
+    <div class="sidebar-card">
+      <div class="sidebar-title">⚡ Recent Activity</div>
+      <div id="timeline"><div style="color:var(--muted);font-size:13px;">No recent activity.</div></div>
+    </div>
+  </div>
+</div>
+
+<div class="last-synced" id="lastSynced"></div>
+
+<!-- Modal -->
+<div class="modal-overlay" id="modalOverlay" onclick="closeModal(event)">
+  <div class="modal" id="modal">
+    <button class="modal-close" onclick="closeModalBtn()">✕</button>
+    <div class="modal-school" id="modalSchool"></div>
+    <div class="modal-coach" id="modalCoach"></div>
+    <div class="card-tags" id="modalTags"></div>
+    <div class="modal-label" style="margin-top:16px;">Subject</div>
+    <div class="modal-subject" id="modalSubject"></div>
+    <div class="modal-label">AI Summary</div>
+    <div class="modal-summary" id="modalSummary"></div>
+    <div class="modal-label">Full Email</div>
+    <div class="modal-body" id="modalBody"></div>
+  </div>
+</div>
+
+<script>
+let allEmails = [];
+let currentFilter = 'all';
+
+const SCHOOL_COLORS = [
+  '#e8c84a','#4a9eff','#3ddc97','#ff5f5f','#c480ff',
+  '#ff9f40','#4affd4','#ff6b9d','#a0ff4a','#ff4a9e'
+];
+
+const schoolColorMap = {};
+let colorIndex = 0;
+
+function getSchoolColor(school) {
+  if (!schoolColorMap[school]) {
+    schoolColorMap[school] = SCHOOL_COLORS[colorIndex % SCHOOL_COLORS.length];
+    colorIndex++;
+  }
+  return schoolColorMap[school];
+}
+
+function getInitials(name) {
+  return name.split(' ').map(w => w[0]).join('').slice(0, 2).toUpperCase();
+}
+
+async function loadData() {
+  const btn = document.getElementById('syncBtn');
+  btn.textContent = '⟳ Loading...';
+  btn.classList.add('syncing');
+
+  try {
+    const res = await fetch('data.json?t=' + Date.now());
+    if (!res.ok) throw new Error('No data file');
+    const data = await res.json();
+    renderDashboard(data);
+  } catch(e) {
+    renderDemo();
+  }
+
+  btn.textContent = '⟳ Refresh';
+  btn.classList.remove('syncing');
+}
+
+function renderDemo() {
+  const demo = {
+    lastSynced: new Date().toISOString(),
+    emails: [
+      {
+        id: '1',
+        school: 'University of Michigan',
+        coach: 'Coach Jim Harbaugh',
+        subject: 'Interested in your kicking ability - Class of 2028',
+        summary: 'Coach reached out expressing strong interest after watching your game film. They want to schedule a call next week to discuss the program and your fit. Mentioned scholarship opportunities for specialized kickers.',
+        body: 'Hi [Your Name],\n\nI came across your film and was extremely impressed with your consistency and leg strength. We are very interested in you for our Class of 2028.\n\nWould love to set up a call this week.\n\nGo Blue,\nCoach',
+        date: '2025-02-28',
+        tags: ['d1', 'scholarship'],
+        unread: true
+      },
+      {
+        id: '2',
+        school: 'Ohio State University',
+        coach: 'Special Teams Coach',
+        subject: 'Camp Invitation - Summer 2025',
+        summary: 'Invited to attend their elite kicking camp in June. This is a great opportunity to get exposure in front of the coaching staff. Early registration discount available.',
+        body: 'Hello,\n\nWe would like to invite you to our summer kicking camp on June 15th. This is a great opportunity to showcase your skills.\n\nBest,\nOhio State Special Teams',
+        date: '2025-02-25',
+        tags: ['d1', 'camp'],
+        unread: false
+      },
+      {
+        id: '3',
+        school: 'Notre Dame',
+        coach: 'Coach Marcus Freeman',
+        subject: 'Official Visit Weekend - March 15-17',
+        summary: 'Official visit invite for the weekend of March 15-17. Will include campus tour, facility visit, and meetings with the academic staff. Airfare covered.',
+        body: 'We would love to have you on campus for an official visit...',
+        date: '2025-02-20',
+        tags: ['d1', 'visit', 'offer'],
+        unread: false
+      },
+      {
+        id: '4',
+        school: 'Penn State',
+        coach: 'Recruiting Coordinator',
+        subject: 'Following your senior season with great interest',
+        summary: 'Routine outreach expressing interest in following your career. Sent questionnaire to fill out and return. No specific offer mentioned yet but gauging interest level.',
+        body: 'Please fill out our recruiting questionnaire at your earliest convenience...',
+        date: '2025-02-15',
+        tags: ['d1'],
+        unread: false
+      },
+      {
+        id: '5',
+        school: 'Boise State',
+        coach: 'Special Teams Coordinator',
+        subject: '🎉 Official Scholarship Offer - Boise State University',
+        summary: 'OFFER RECEIVED! Full scholarship offer for 2028 class. Includes full tuition, room and board. Visit scheduled for April. This is their first kicker offer in 3 years.',
+        body: 'It is with great pleasure that we extend to you a full scholarship offer...',
+        date: '2025-02-10',
+        tags: ['d1', 'offer', 'scholarship'],
+        unread: false
+      }
+    ]
+  };
+  renderDashboard(demo);
+}
+
+function renderDashboard(data) {
+  allEmails = data.emails || [];
+
+  // Stats
+  const now = new Date();
+  const weekAgo = new Date(now - 7 * 24 * 60 * 60 * 1000);
+  const thisWeek = allEmails.filter(e => new Date(e.date) >= weekAgo).length;
+  const schools = [...new Set(allEmails.map(e => e.school))];
+  const offers = allEmails.filter(e => e.tags && e.tags.includes('offer')).length;
+
+  document.getElementById('statTotal').textContent = allEmails.length;
+  document.getElementById('statSchools').textContent = schools.length;
+  document.getElementById('statOffers').textContent = offers;
+  document.getElementById('statNew').textContent = thisWeek;
+
+  // School sidebar
+  const schoolCounts = {};
+  allEmails.forEach(e => { schoolCounts[e.school] = (schoolCounts[e.school] || 0) + 1; });
+  const topSchools = Object.entries(schoolCounts).sort((a,b) => b[1]-a[1]).slice(0, 7);
+  document.getElementById('schoolList').innerHTML = topSchools.map(([s, c]) => `
+    <div class="school-list-item">
+      <div class="school-list-left">
+        <div class="school-dot" style="background:${getSchoolColor(s)}"></div>
+        <div class="school-list-name">${s}</div>
+      </div>
+      <div class="school-list-count">${c}</div>
+    </div>
+  `).join('') || '<div style="color:var(--muted);font-size:13px;">No schools yet.</div>';
+
+  // Timeline (recent 5)
+  const recent = [...allEmails].sort((a,b) => new Date(b.date)-new Date(a.date)).slice(0, 5);
+  const tlIcons = { offer: {icon: '🏆', bg: 'rgba(61,220,151,0.2)'}, visit: {icon: '✈️', bg: 'rgba(255,95,95,0.2)'}, camp: {icon: '⛺', bg: 'rgba(180,100,255,0.2)'}, d1: {icon: '⭐', bg: 'rgba(74,158,255,0.15)'}, default: {icon: '📧', bg: 'rgba(90,100,117,0.2)'} };
+  document.getElementById('timeline').innerHTML = recent.map(e => {
+    const mainTag = e.tags && e.tags[0] ? e.tags[0] : 'default';
+    const tl = tlIcons[mainTag] || tlIcons.default;
+    return `
+      <div class="timeline-item">
+        <div class="timeline-dot" style="background:${tl.bg}">${tl.icon}</div>
+        <div class="timeline-info">
+          <div class="timeline-action">${e.subject}</div>
+          <div class="timeline-school">${e.school}</div>
+          <div class="timeline-date">${formatDate(e.date)}</div>
+        </div>
+      </div>
+    `;
+  }).join('') || '<div style="color:var(--muted);font-size:13px;">No activity yet.</div>';
+
+  // Last synced
+  if (data.lastSynced) {
+    document.getElementById('lastSynced').textContent = 'Last synced: ' + new Date(data.lastSynced).toLocaleString();
+  }
+
+  renderEmails();
+}
+
+function renderEmails() {
+  const filtered = currentFilter === 'all'
+    ? allEmails
+    : allEmails.filter(e => e.tags && e.tags.includes(currentFilter));
+
+  const sorted = [...filtered].sort((a,b) => new Date(b.date)-new Date(a.date));
+
+  if (sorted.length === 0) {
+    document.getElementById('emailList').innerHTML = `
+      <div class="empty">
+        <div class="empty-icon">📭</div>
+        <div class="empty-title">No Emails Found</div>
+        <div class="empty-sub">No emails match this filter yet.</div>
+      </div>
+    `;
+    return;
+  }
+
+  document.getElementById('emailList').innerHTML = sorted.map((e, i) => `
+    <div class="email-card ${e.unread ? 'unread' : ''}" onclick="openModal('${e.id}')" style="animation-delay:${i*0.05}s">
+      <div class="card-top">
+        <div class="school-logo" style="background:${getSchoolColor(e.school)}22;color:${getSchoolColor(e.school)}">${getInitials(e.school)}</div>
+        <div class="card-meta">
+          <div class="school-name">${e.school}</div>
+          <div class="coach-name">${e.coach || 'Recruiting Staff'}</div>
+        </div>
+        <div class="card-date">${formatDate(e.date)}</div>
+      </div>
+      <div class="card-subject">${e.subject}</div>
+      <div class="card-summary">${e.summary}</div>
+      <div class="card-tags">${(e.tags || []).map(t => `<span class="tag ${t}">${tagLabel(t)}</span>`).join('')}</div>
+    </div>
+  `).join('');
+}
+
+function tagLabel(t) {
+  const labels = { d1: 'D1', d2: 'D2', d3: 'D3', offer: '🏆 Offer', visit: '✈️ Visit', camp: '⛺ Camp', scholarship: '💰 Scholarship' };
+  return labels[t] || t.toUpperCase();
+}
+
+function formatDate(d) {
+  const date = new Date(d + 'T00:00:00');
+  return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+}
+
+function setFilter(f, btn) {
+  currentFilter = f;
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  renderEmails();
+}
+
+function openModal(id) {
+  const email = allEmails.find(e => e.id === id);
+  if (!email) return;
+  email.unread = false;
+
+  document.getElementById('modalSchool').textContent = email.school;
+  document.getElementById('modalCoach').textContent = email.coach || 'Recruiting Staff';
+  document.getElementById('modalSubject').textContent = email.subject;
+  document.getElementById('modalSummary').textContent = email.summary;
+  document.getElementById('modalBody').textContent = email.body || 'Full email content not available.';
+  document.getElementById('modalTags').innerHTML = (email.tags || []).map(t => `<span class="tag ${t}">${tagLabel(t)}</span>`).join('');
+  document.getElementById('modalOverlay').classList.add('open');
+  renderEmails();
+}
+
+function closeModal(e) { if (e.target === document.getElementById('modalOverlay')) closeModalBtn(); }
+function closeModalBtn() { document.getElementById('modalOverlay').classList.remove('open'); }
+
+// PWA install
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('sw.js').catch(() => {});
+}
+
+loadData();
+</script>
+</body>
+</html>
