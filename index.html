@@ -5,7 +5,12 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>Isaac Lambert — Recruiting</title>
 <link rel="manifest" href="manifest.json">
-<link rel="icon" href="https://www.eskymofanclub.org/wp-content/uploads/Escanaba-512.png" type="image/png">
+<!-- ============================================================
+     TAB / BROWSER ICON
+     Replace BOTH URLs below with your own image link (png or jpg).
+     Upload your logo to imgur.com and paste the direct image URL here.
+     ============================================================ -->
+<link rel="icon" href="https://i.imgur.com/yourimage.png" type="image/png">
 <link rel="apple-touch-icon" href="https://i.imgur.com/yourimage.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
@@ -34,7 +39,6 @@
     padding-bottom: 40px;
   }
 
-  /* Header */
   .header {
     background: var(--surface);
     border-bottom: 1px solid var(--border);
@@ -54,10 +58,24 @@
     gap: 12px;
   }
 
-  /* Eskymos E SVG Logo */
   .eskymos-logo {
     width: 40px;
     height: 40px;
+    border-radius: 8px;
+    flex-shrink: 0;
+    object-fit: contain;
+  }
+
+  .logo-fallback {
+    width: 40px; height: 40px;
+    background: var(--accent);
+    border-radius: 8px;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 26px;
+    color: #000;
     flex-shrink: 0;
   }
 
@@ -88,7 +106,6 @@
     white-space: nowrap;
   }
 
-  /* Stats bar */
   .stats-bar {
     max-width: 900px;
     margin: 20px auto 0;
@@ -136,7 +153,6 @@
     font-family: 'DM Mono', monospace;
   }
 
-  /* Main content */
   .main {
     max-width: 900px;
     margin: 24px auto 0;
@@ -147,12 +163,13 @@
     align-items: start;
   }
 
-  /* Filter tabs */
+  /* Tag filter row */
   .filter-row {
     display: flex;
     gap: 8px;
-    margin-bottom: 16px;
+    margin-bottom: 10px;
     flex-wrap: wrap;
+    align-items: center;
   }
 
   .filter-btn {
@@ -173,6 +190,44 @@
     color: #000;
     border-color: var(--accent);
   }
+
+  /* School dropdown */
+  .school-filter-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 16px;
+  }
+
+  .school-filter-label {
+    font-size: 11px;
+    color: var(--muted);
+    font-family: 'DM Mono', monospace;
+    white-space: nowrap;
+  }
+
+  .school-select {
+    flex: 1;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 12px;
+    padding: 7px 32px 7px 14px;
+    cursor: pointer;
+    outline: none;
+    appearance: none;
+    -webkit-appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%238a95a3' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 12px center;
+    background-color: var(--surface);
+    transition: border-color 0.15s;
+  }
+
+  .school-select:focus, .school-select:hover { border-color: var(--accent); }
+  .school-select option { background: #181c22; color: var(--text); }
 
   /* Email cards */
   .email-card {
@@ -210,8 +265,7 @@
   }
 
   .school-logo {
-    width: 40px;
-    height: 40px;
+    width: 40px; height: 40px;
     border-radius: 10px;
     display: flex;
     align-items: center;
@@ -220,7 +274,6 @@
     font-weight: 700;
     flex-shrink: 0;
     font-family: 'Bebas Neue', sans-serif;
-    letter-spacing: 0.5px;
   }
 
   .card-meta { flex: 1; min-width: 0; }
@@ -234,11 +287,7 @@
     text-overflow: ellipsis;
   }
 
-  .coach-name {
-    font-size: 12px;
-    color: var(--muted2);
-    margin-top: 2px;
-  }
+  .coach-name { font-size: 12px; color: var(--muted2); margin-top: 2px; }
 
   .card-date {
     font-size: 11px;
@@ -265,12 +314,7 @@
     overflow: hidden;
   }
 
-  .card-tags {
-    display: flex;
-    gap: 6px;
-    margin-top: 12px;
-    flex-wrap: wrap;
-  }
+  .card-tags { display: flex; gap: 6px; margin-top: 12px; flex-wrap: wrap; }
 
   .tag {
     padding: 3px 10px;
@@ -288,7 +332,6 @@
   .tag.camp { background: rgba(180,100,255,0.15); color: #c480ff; }
   .tag.scholarship { background: rgba(244,124,32,0.2); color: var(--accent); border: 1px solid var(--accent); }
 
-  /* Sidebar */
   .sidebar { display: flex; flex-direction: column; gap: 16px; }
 
   .sidebar-card {
@@ -312,26 +355,18 @@
     justify-content: space-between;
     padding: 10px 0;
     border-bottom: 1px solid var(--border);
+    cursor: pointer;
+    transition: opacity 0.15s;
   }
+
+  .school-list-item:hover { opacity: 0.7; }
   .school-list-item:last-child { border-bottom: none; }
 
-  .school-list-left {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-  }
+  .school-list-left { display: flex; align-items: center; gap: 10px; }
 
-  .school-dot {
-    width: 8px; height: 8px;
-    border-radius: 50%;
-    flex-shrink: 0;
-  }
+  .school-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
 
-  .school-list-name {
-    font-size: 13px;
-    font-weight: 500;
-    color: var(--text);
-  }
+  .school-list-name { font-size: 13px; font-weight: 500; color: var(--text); }
 
   .school-list-count {
     font-size: 11px;
@@ -342,7 +377,6 @@
     border-radius: 10px;
   }
 
-  /* Timeline */
   .timeline-item {
     display: flex;
     gap: 12px;
@@ -363,26 +397,9 @@
   }
 
   .timeline-info { flex: 1; }
-
-  .timeline-action {
-    font-size: 13px;
-    font-weight: 500;
-    color: var(--text);
-    line-height: 1.4;
-  }
-
-  .timeline-school {
-    font-size: 12px;
-    color: var(--muted2);
-    margin-top: 2px;
-  }
-
-  .timeline-date {
-    font-size: 10px;
-    font-family: 'DM Mono', monospace;
-    color: var(--muted);
-    margin-top: 3px;
-  }
+  .timeline-action { font-size: 13px; font-weight: 500; color: var(--text); line-height: 1.4; }
+  .timeline-school { font-size: 12px; color: var(--muted2); margin-top: 2px; }
+  .timeline-date { font-size: 10px; font-family: 'DM Mono', monospace; color: var(--muted); margin-top: 3px; }
 
   /* Modal */
   .modal-overlay {
@@ -429,16 +446,11 @@
   .modal-school { font-family: 'Bebas Neue', sans-serif; font-size: 28px; letter-spacing: 1px; margin-bottom: 4px; }
   .modal-coach { font-size: 14px; color: var(--muted2); margin-bottom: 16px; }
   .modal-subject { font-size: 16px; font-weight: 600; margin-bottom: 12px; }
-  .modal-summary { font-size: 14px; color: var(--muted2); line-height: 1.7; margin-bottom: 20px; }
+  .modal-summary { font-size: 14px; color: var(--muted2); line-height: 1.7; }
   .modal-label { font-size: 10px; text-transform: uppercase; letter-spacing: 1.5px; color: var(--muted); font-family: 'DM Mono', monospace; margin-bottom: 6px; margin-top: 16px; }
   .modal-body { font-size: 13px; color: var(--muted2); line-height: 1.8; background: var(--surface2); border-radius: 10px; padding: 16px; white-space: pre-wrap; }
 
-  /* Empty state */
-  .empty {
-    text-align: center;
-    padding: 60px 20px;
-    color: var(--muted);
-  }
+  .empty { text-align: center; padding: 60px 20px; color: var(--muted); }
   .empty-icon { font-size: 48px; margin-bottom: 12px; }
   .empty-title { font-family: 'Bebas Neue', sans-serif; font-size: 24px; color: var(--muted2); letter-spacing: 1px; margin-bottom: 8px; }
   .empty-sub { font-size: 13px; line-height: 1.6; }
@@ -464,9 +476,14 @@
 
 <header class="header">
   <div class="header-inner">
-    <img class="eskymos-logo" src="https://www.eskymofanclub.org/wp-content/uploads/Escanaba-512.png" alt="Eskymos E" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
-    <!-- Fallback orange E shown if image fails to load -->
-    <div class="eskymos-logo" style="display:none;background:#f47c20;border-radius:8px;align-items:center;justify-content:center;font-family:'Bebas Neue',sans-serif;font-size:26px;color:#000;font-weight:700;">E</div>
+    <!-- ============================================================
+         HEADER LOGO IMAGE
+         Replace the src URL below with your own image link.
+         Upload to imgur.com → right-click image → Copy Image Address
+         ============================================================ -->
+    <img class="eskymos-logo" src="https://i.imgur.com/yourimage.png" alt="E"
+         onerror="this.style.display='none';document.getElementById('logoFallback').style.display='flex'">
+    <div class="logo-fallback" id="logoFallback">E</div>
 
     <div class="logo-text-wrap">
       <div class="logo-name">Isaac Lambert</div>
@@ -497,14 +514,26 @@
 
 <div class="main">
   <div>
+    <!-- Tag filters -->
     <div class="filter-row">
-      <button class="filter-btn active" onclick="setFilter('all', this)">All</button>
-      <button class="filter-btn" onclick="setFilter('offer', this)">Offers</button>
-      <button class="filter-btn" onclick="setFilter('visit', this)">Visits</button>
-      <button class="filter-btn" onclick="setFilter('camp', this)">Camps</button>
-      <button class="filter-btn" onclick="setFilter('scholarship', this)">Scholarships</button>
-      <button class="filter-btn" onclick="setFilter('d1', this)">D1</button>
+      <button class="filter-btn active" onclick="setTagFilter('all', this)">All</button>
+      <button class="filter-btn" onclick="setTagFilter('offer', this)">🏆 Offers</button>
+      <button class="filter-btn" onclick="setTagFilter('visit', this)">✈️ Visits</button>
+      <button class="filter-btn" onclick="setTagFilter('camp', this)">⛺ Camps</button>
+      <button class="filter-btn" onclick="setTagFilter('scholarship', this)">💰 Scholarships</button>
+      <button class="filter-btn" onclick="setTagFilter('d1', this)">D1</button>
+      <button class="filter-btn" onclick="setTagFilter('d2', this)">D2</button>
+      <button class="filter-btn" onclick="setTagFilter('d3', this)">D3</button>
     </div>
+
+    <!-- School dropdown -->
+    <div class="school-filter-row">
+      <span class="school-filter-label">SCHOOL</span>
+      <select class="school-select" id="schoolSelect" onchange="setSchoolFilter(this.value)">
+        <option value="all">All Schools</option>
+      </select>
+    </div>
+
     <div id="emailList"></div>
   </div>
 
@@ -538,7 +567,8 @@
 
 <script>
 let allEmails = [];
-let currentFilter = 'all';
+let currentTagFilter = 'all';
+let currentSchoolFilter = 'all';
 
 const COLORS = ['#f47c20','#4a9eff','#3ddc97','#ff5f5f','#c480ff','#ff9f40','#4affd4','#ff6b9d','#a0ff4a'];
 const schoolColorMap = {};
@@ -550,7 +580,7 @@ function getColor(school) {
 }
 
 function getInitials(name) {
-  return name.split(' ').map(w => w[0]).join('').slice(0, 2).toUpperCase();
+  return name.split(' ').filter(Boolean).map(w => w[0]).join('').slice(0, 2).toUpperCase();
 }
 
 function formatDate(d) {
@@ -573,15 +603,12 @@ async function loadData() {
 }
 
 function renderEmpty() {
-  document.getElementById('statTotal').textContent = '0';
-  document.getElementById('statSchools').textContent = '0';
-  document.getElementById('statOffers').textContent = '0';
-  document.getElementById('statNew').textContent = '0';
+  ['statTotal','statSchools','statOffers','statNew'].forEach(id => document.getElementById(id).textContent = '0');
   document.getElementById('emailList').innerHTML = `
     <div class="empty">
       <div class="empty-icon">📬</div>
       <div class="empty-title">Ready & Waiting</div>
-      <div class="empty-sub">Your dashboard is set up and ready to go.<br>Recruiting emails will appear here automatically<br>once they start coming in.</div>
+      <div class="empty-sub">Your dashboard is set up!<br>Recruiting emails will appear here<br>automatically once they start coming in.</div>
     </div>`;
   document.getElementById('schoolList').innerHTML = '<div style="color:var(--muted);font-size:13px;">No emails yet.</div>';
   document.getElementById('timeline').innerHTML = '<div style="color:var(--muted);font-size:13px;">No activity yet.</div>';
@@ -600,12 +627,24 @@ function renderDashboard(data) {
   document.getElementById('statOffers').textContent = offers;
   document.getElementById('statNew').textContent = thisWeek;
 
-  // School sidebar
+  // Populate school dropdown
+  const select = document.getElementById('schoolSelect');
+  const prevVal = select.value;
+  select.innerHTML = '<option value="all">All Schools</option>';
   const schoolCounts = {};
   allEmails.forEach(e => schoolCounts[e.school] = (schoolCounts[e.school] || 0) + 1);
+  Object.entries(schoolCounts).sort((a,b) => b[1]-a[1]).forEach(([s, c]) => {
+    const opt = document.createElement('option');
+    opt.value = s;
+    opt.textContent = `${s} (${c})`;
+    select.appendChild(opt);
+  });
+  if (prevVal) select.value = prevVal;
+
+  // School sidebar — clicking filters by that school
   const top = Object.entries(schoolCounts).sort((a,b)=>b[1]-a[1]).slice(0,7);
   document.getElementById('schoolList').innerHTML = top.length ? top.map(([s,c]) => `
-    <div class="school-list-item">
+    <div class="school-list-item" onclick="filterBySchool('${s.replace(/'/g,"\\'")}')">
       <div class="school-list-left">
         <div class="school-dot" style="background:${getColor(s)}"></div>
         <div class="school-list-name">${s}</div>
@@ -629,7 +668,6 @@ function renderDashboard(data) {
     </div>`;
   }).join('') : '<div style="color:var(--muted);font-size:13px;">No activity yet.</div>';
 
-  // Last synced
   if (data.lastSynced) {
     const d = new Date(data.lastSynced);
     document.getElementById('lastSyncedHeader').textContent = 'Synced ' + d.toLocaleDateString('en-US',{month:'short',day:'numeric'});
@@ -638,16 +676,23 @@ function renderDashboard(data) {
   renderEmails();
 }
 
+function getFilteredEmails() {
+  return allEmails.filter(e => {
+    const tagMatch = currentTagFilter === 'all' || (e.tags && e.tags.includes(currentTagFilter));
+    const schoolMatch = currentSchoolFilter === 'all' || e.school === currentSchoolFilter;
+    return tagMatch && schoolMatch;
+  });
+}
+
 function renderEmails() {
-  const filtered = currentFilter === 'all' ? allEmails : allEmails.filter(e => e.tags && e.tags.includes(currentFilter));
-  const sorted = [...filtered].sort((a,b) => new Date(b.date)-new Date(a.date));
+  const sorted = [...getFilteredEmails()].sort((a,b) => new Date(b.date)-new Date(a.date));
 
   if (!sorted.length) {
     document.getElementById('emailList').innerHTML = `
       <div class="empty">
         <div class="empty-icon">📭</div>
         <div class="empty-title">Nothing Here Yet</div>
-        <div class="empty-sub">No emails match this filter yet.</div>
+        <div class="empty-sub">No emails match this filter.</div>
       </div>`;
     return;
   }
@@ -668,11 +713,25 @@ function renderEmails() {
     </div>`).join('');
 }
 
-function setFilter(f, btn) {
-  currentFilter = f;
+function setTagFilter(f, btn) {
+  currentTagFilter = f;
   document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
   btn.classList.add('active');
   renderEmails();
+}
+
+function setSchoolFilter(val) {
+  currentSchoolFilter = val;
+  renderEmails();
+}
+
+// Clicking a school in the sidebar sets the dropdown and filters
+function filterBySchool(school) {
+  currentSchoolFilter = school;
+  document.getElementById('schoolSelect').value = school;
+  renderEmails();
+  // Scroll to email list on mobile
+  document.getElementById('emailList').scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
 
 function openModal(id) {
